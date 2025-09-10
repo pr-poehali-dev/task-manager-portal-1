@@ -6,18 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import Icon from '@/components/ui/icon';
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  assignee?: string;
-  priority: 'high' | 'medium' | 'low';
-  status: 'pending' | 'in_progress' | 'completed';
-  deadline: string;
-  createdAt: string;
-  assignedBy?: string;
-}
+import { Task } from '@/utils/localStorage';
 
 interface CreateTaskDialogProps {
   currentUser: {
@@ -38,27 +27,35 @@ const CreateTaskDialog = ({ currentUser, onCreateTask }: CreateTaskDialogProps) 
   });
 
   const handleCreateTask = () => {
-    if (!newTaskForm.title || !newTaskForm.description) return;
+    if (!newTaskForm.title.trim() || !newTaskForm.description.trim()) {
+      alert('Пожалуйста, заполните название и описание задачи');
+      return;
+    }
 
-    const taskData = {
-      title: newTaskForm.title,
-      description: newTaskForm.description,
-      assignee: newTaskForm.assignee || undefined,
-      priority: newTaskForm.priority,
-      deadline: newTaskForm.deadline,
-      assignedBy: currentUser?.username
-    };
+    try {
+      const taskData = {
+        title: newTaskForm.title.trim(),
+        description: newTaskForm.description.trim(),
+        assignee: newTaskForm.assignee || undefined,
+        priority: newTaskForm.priority,
+        deadline: newTaskForm.deadline,
+        assignedBy: currentUser?.username
+      };
 
-    onCreateTask(taskData);
-    
-    setNewTaskForm({
-      title: '',
-      description: '',
-      assignee: '',
-      priority: 'medium',
-      deadline: ''
-    });
-    setIsCreateDialogOpen(false);
+      onCreateTask(taskData);
+      
+      setNewTaskForm({
+        title: '',
+        description: '',
+        assignee: '',
+        priority: 'medium',
+        deadline: ''
+      });
+      setIsCreateDialogOpen(false);
+    } catch (error) {
+      console.error('Ошибка при создании задачи:', error);
+      alert('Произошла ошибка при создании задачи');
+    }
   };
 
   if (currentUser.role !== 'admin') {
