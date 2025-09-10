@@ -139,11 +139,12 @@ const CreateTaskDialog = ({ currentUser, onCreateTask }: CreateTaskDialogProps) 
             />
           </div>
           <div className="flex gap-3 pt-4">
+            <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+              <Icon name="ArrowLeft" className="mr-2" size={16} />
+              Назад
+            </Button>
             <Button onClick={handleCreateTask} className="flex-1">
               Создать задачу
-            </Button>
-            <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-              Отмена
             </Button>
           </div>
         </div>
